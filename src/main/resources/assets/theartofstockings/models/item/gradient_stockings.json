@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "theartofstockings:item/gradient_stockings",
+    "layer1": "theartofstockings:item/gradient_stockings_bottom"
+  }
+}
