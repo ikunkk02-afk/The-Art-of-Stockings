@@ -38,7 +38,16 @@ public final class StockingsItem extends Item implements Equipable {
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
     }
     @Override
+    public Component getName(ItemStack stack) {
+        Component name = super.getName(stack);
+        return stack.has(TheArtofStockings.STINKY.get())
+                ? Component.translatable("item.theartofstockings.stinky_stockings", name) : name;
+    }
+    @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag) {
+        if (stack.has(TheArtofStockings.STINKY.get())) {
+            lines.add(Component.translatable("tooltip.theartofstockings.stinky_stockings").withStyle(ChatFormatting.DARK_GREEN));
+        }
         lines.add(Component.translatable("tooltip.theartofstockings.use").withStyle(ChatFormatting.GRAY));
         lines.add(Component.translatable("tooltip.theartofstockings.stand").withStyle(ChatFormatting.GRAY));
         lines.add(Component.translatable("tooltip.theartofstockings.dye").withStyle(ChatFormatting.GRAY));

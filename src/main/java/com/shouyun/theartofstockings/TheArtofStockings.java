@@ -17,6 +17,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Unit;
 import java.util.function.Supplier;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -36,9 +38,13 @@ public final class TheArtofStockings {
     public static final DeferredItem<StockingsItem> FISHNET = clothing("fishnet_stockings", StockingsItem.Style.FISHNET);
     public static final DeferredItem<StockingsItem> GLOW = clothing("glow_stockings", StockingsItem.Style.GLOW);
     public static final DeferredItem<PaletteItem> PALETTE = ITEMS.register("palette", () -> new PaletteItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<FootbathWaterItem> FOOTBATH_WATER = ITEMS.register("footbath_water",
+            () -> new FootbathWaterItem(new Item.Properties().stacksTo(1)));
     public static final DeferredRegister<DataComponentType<?>> COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MODID);
     public static final Supplier<DataComponentType<Integer>> SECONDARY_COLOR = COMPONENTS.register("secondary_color",
             () -> DataComponentType.<Integer>builder().persistent(Codec.intRange(0, 0xFFFFFF)).networkSynchronized(ByteBufCodecs.INT).build());
+    public static final Supplier<DataComponentType<Unit>> STINKY = COMPONENTS.register("stinky",
+            () -> DataComponentType.<Unit>builder().persistent(Unit.CODEC).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).build());
     public static final DeferredRegister<RecipeSerializer<?>> RECIPES = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
     public static final Supplier<SimpleCraftingRecipeSerializer<StockingsStyleRecipe>> STYLE_RECIPE = RECIPES.register("stockings_style",
             () -> new SimpleCraftingRecipeSerializer<>(StockingsStyleRecipe::new));
@@ -50,6 +56,7 @@ public final class TheArtofStockings {
         ATTACHMENTS.register(bus);
         COMPONENTS.register(bus);
         RECIPES.register(bus);
+        FootOdor.register(bus);
         bus.addListener(StockingsNetwork::register);
         bus.addListener(this::creativeItems);
     }
@@ -57,6 +64,7 @@ public final class TheArtofStockings {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(STOCKINGS);
             event.accept(PALETTE);
+            event.accept(FOOTBATH_WATER);
             event.accept(GRADIENT); event.accept(PANTYHOSE); event.accept(FISHNET); event.accept(GLOW);
             for (DyeColor color : DyeColor.values()) {
                 ItemStack stack = STOCKINGS.toStack();

@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "theartofstockings:item/glow_stockings"
+    "layer0": "theartofstockings:item/glow_stockings",
+    "layer1": "theartofstockings:item/glow_stockings_sparkle"
   }
 }

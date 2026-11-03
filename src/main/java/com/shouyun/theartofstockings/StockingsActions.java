@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -74,6 +75,7 @@ public final class StockingsActions {
         if (action.equip) StockingsWear.set(player, actual.split(1));
         else {
             StockingsWear.set(player, ItemStack.EMPTY);
+            if (player.hasEffect(FootOdor.EFFECT)) actual.set(TheArtofStockings.STINKY.get(), Unit.INSTANCE);
             returnItem(player, actual);
         }
         player.inventoryMenu.broadcastChanges();

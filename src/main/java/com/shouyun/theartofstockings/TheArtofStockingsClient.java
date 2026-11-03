@@ -33,9 +33,14 @@ public final class TheArtofStockingsClient {
     }
     private void reloadListeners(RegisterClientReloadListenersEvent event) { event.registerReloadListener(new StockingsAssets()); }
     private void colors(RegisterColorHandlersEvent.Item event) {
-        event.register((stack, tint) -> tint == 0 ? StockingsItem.color(stack) : tint == 1 ? StockingsItem.secondaryColor(stack) : -1,
-                TheArtofStockings.STOCKINGS.get(),TheArtofStockings.GRADIENT.get(),TheArtofStockings.PANTYHOSE.get(),
-                TheArtofStockings.FISHNET.get(),TheArtofStockings.GLOW.get());
+        event.register((stack, tint) -> {
+            if (tint == 0) return StockingsItem.mix(StockingsItem.color(stack), 0xFFFFFFFF, 0.28F);
+            if (tint == 1 && stack.is(TheArtofStockings.GRADIENT.get())) {
+                return StockingsItem.mix(StockingsItem.secondaryColor(stack), 0xFFFFFFFF, 0.28F);
+            }
+            return -1;
+        }, TheArtofStockings.STOCKINGS.get(), TheArtofStockings.GRADIENT.get(), TheArtofStockings.PANTYHOSE.get(),
+                TheArtofStockings.FISHNET.get(), TheArtofStockings.GLOW.get());
     }
     private void layers(EntityRenderersEvent.AddLayers event) {
         for (var skin : event.getSkins()) {

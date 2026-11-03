@@ -33,5 +33,11 @@
   "gui.theartofstockings.palette.hue": "Hue",
   "gui.theartofstockings.palette.swatches": "Dye colors",
   "gui.theartofstockings.palette.invalid": "Enter six RGB hex digits",
-  "message.theartofstockings.already_wearing": "Take off your current stockings before changing pairs."
+  "message.theartofstockings.already_wearing": "Take off your current stockings before changing pairs.",
+  "effect.theartofstockings.foot_odor": "Foot Odor",
+  "commands.theartofstockings.footodor.success": "Foot Odor is active.",
+  "item.theartofstockings.stinky_stockings": "Stinky %1$s",
+  "item.theartofstockings.footbath_water": "Footbath Water",
+  "tooltip.theartofstockings.stinky_stockings": "Stinky. Brew with a water bottle to make Footbath Water.",
+  "tooltip.theartofstockings.footbath_water.throw": "Sneak and right-click to throw. The splash spreads Foot Odor."
 }

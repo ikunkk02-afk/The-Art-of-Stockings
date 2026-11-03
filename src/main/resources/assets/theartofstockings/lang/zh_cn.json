@@ -33,5 +33,11 @@
   "gui.theartofstockings.palette.hue": "色相",
   "gui.theartofstockings.palette.swatches": "染料色卡",
   "gui.theartofstockings.palette.invalid": "请输入六位 RGB 色值",
-  "message.theartofstockings.already_wearing": "请先脱下身上的丝袜，再换另一双。"
+  "message.theartofstockings.already_wearing": "请先脱下身上的丝袜，再换另一双。",
+  "effect.theartofstockings.foot_odor": "脚臭",
+  "commands.theartofstockings.footodor.success": "脚臭已生效。",
+  "item.theartofstockings.stinky_stockings": "臭烘烘的%1$s",
+  "item.theartofstockings.footbath_water": "洗脚水",
+  "tooltip.theartofstockings.stinky_stockings": "臭烘烘的，可在酿造台与水瓶酿成洗脚水。",
+  "tooltip.theartofstockings.footbath_water.throw": "潜行时右键投掷，溅到的人会获得脚臭。"
 }

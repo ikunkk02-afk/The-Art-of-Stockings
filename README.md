@@ -1,8 +1,8 @@
 # The Art of Stockings · 丝袜艺术
 
-**0.4.0** · Minecraft Java **1.21.1** · NeoForge **21.1.265+** · Java **21** · MIT
+**0.6.1** · Minecraft Java **1.21.1** · NeoForge **21.1.265+** · Java **21** · MIT
 
-下载 [theartofstockings-0.4.0.jar](deliverables/theartofstockings-0.4.0.jar)，放进 `mods`，移除本模组旧版 JAR。无需 GeckoLib、Curios 或其他前置。联机两端都需安装本版；同步协议为 5，不能与 0.3.x 或更早版本混用。
+构建产物为 `build/libs/theartofstockings-0.6.1.jar`。放进 `mods` 并移除本模组旧版 JAR。联机两端都需安装同一版本。历史发布版见 [theartofstockings-0.4.0.jar](deliverables/theartofstockings-0.4.0.jar)。
 
 ## 五种丝袜与合成
 
@@ -42,6 +42,18 @@
 
 连裤袜袜身延伸至腰部，腰部随身体动作；渔网使用真正透明的菱形网孔。发光丝袜在暗处自发光，不产生方块光照；光晕取决于光影设置。材质叠在皮肤上，不会擦除皮肤本身的裤子和鞋子。
 
+## 脚臭
+
+丝袜、护腿与靴子一起穿满 24,000 游戏刻（正常速度约 20 分钟）会触发脚臭，身体周围浮出黄绿色气味粒子。穿戴时间随存档保存，离线和睡觉跳过的时间不会计入。
+
+开启作弊或拥有 OP 权限的玩家可以输入 `/footodor`，立即给自己施加 60 秒脚臭，无需等待或满足穿戴条件。
+
+8 格内闻到气味的村民会尝试绕开玩家。僵尸、骷髅和苦力怕能在最多 48 格外锁定气味来源，并沿地形追来。脱掉任一层会重置穿戴计时，身上的气味约 1 分钟后散去。牛奶可以清除状态并重新开始计时。
+
+脚臭生效时脱下丝袜，会得到臭烘烘的同一双丝袜，款式、染色和自定义名称都会保留。把臭丝袜放在酿造台上方，下面放普通水瓶，加入烈焰粉即可酿造洗脚水。一双丝袜会被消耗，每批可酿 1 至 3 瓶。
+
+右键喝下洗脚水会获得 10 秒中毒并留下空瓶。潜行右键会掷出瓶子，直接命中时施加 60 秒脚臭，溅到附近的人也会获得较短的脚臭效果。
+
 ## 开发与素材
 
 ```powershell
@@ -52,7 +64,7 @@
 
 `art/gradient_stockings.bbmodel`、`art/pantyhose.bbmodel`、`art/fishnet_stockings.bbmodel`、`art/glow_stockings.bbmodel` 是 Blockbench 工程，含预览配色、模型、UV 和原有两条动画。运行时加载 `src/main/resources/assets/theartofstockings/geo/` 中的 Blockbench 导出几何和共享穿脱动画。游戏使用可染色的中性白材质，工程内示例配色不会限制游戏选色。
 
-`tools/generate_assets.py` 和 `tools/generate_variants.py` 为原创材质生成器，需要 Python 与 Pillow。历史 `stockings-v3.bbmodel` 保留。
+`tools/generate_assets.py` 和 `tools/generate_variants.py` 生成穿戴材质，`tools/generate_item_textures.py` 生成物品栏图标与脚臭状态图标。它们需要 Python 与 Pillow。
 
 ## 验证
 
