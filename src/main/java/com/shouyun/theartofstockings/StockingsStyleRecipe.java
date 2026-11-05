@@ -25,15 +25,21 @@ public final class StockingsStyleRecipe extends CustomRecipe {
                 if (!source.isEmpty()) return null;
                 source = stack;
             } else if (stack.getItem() instanceof DyeItem dye) dyes.add(dye);
-            else if (stack.is(Items.STRING) || stack.is(Items.SHEARS) || stack.is(Items.GLOW_INK_SAC) || stack.is(Items.AMETHYST_SHARD)) {
+            else if (stack.is(Items.STRING) || stack.is(Items.SHEARS) || stack.is(Items.GLOW_INK_SAC) || stack.is(Items.AMETHYST_SHARD)
+                    || stack.is(Items.WHITE_WOOL) || stack.is(Items.RABBIT_HIDE) || stack.is(Items.INK_SAC)
+                    || stack.is(Items.SWEET_BERRIES) || stack.is(Items.PAPER) || stack.is(Items.LEATHER)) {
                 if (!material.isEmpty()) return null;
                 material = stack;
             } else return null;
         }
         if (source.isEmpty()) return null;
-        if (!material.isEmpty()) return source.is(TheArtofStockings.STOCKINGS.get())
-                && (!material.is(Items.AMETHYST_SHARD) || dyes.size() <= 2) ? new Input(source, material, dyes) : null;
-        if (source.is(TheArtofStockings.GRADIENT.get()) && (dyes.size() == 1 || dyes.size() == 2))
+        if (!material.isEmpty()) {
+            boolean twoColors=material.is(Items.AMETHYST_SHARD) || material.is(Items.WHITE_WOOL)
+                    || material.is(Items.RABBIT_HIDE) || material.is(Items.SWEET_BERRIES);
+            return source.is(TheArtofStockings.STOCKINGS.get()) && (!twoColors || dyes.size()<=2)
+                    ? new Input(source,material,dyes) : null;
+        }
+        if (StockingsItem.twoColors(source) && (dyes.size() == 1 || dyes.size() == 2))
             return new Input(source, material, dyes);
         return null;
     }
@@ -42,17 +48,28 @@ public final class StockingsStyleRecipe extends CustomRecipe {
         Input p = parse(input);
         if (p == null) return ItemStack.EMPTY;
         if (p.material.isEmpty() || p.material.is(Items.AMETHYST_SHARD)) {
-            var result = p.source.transmuteCopy(TheArtofStockings.GRADIENT.get(), 1);
+            var result = p.material.isEmpty() ? p.source.copyWithCount(1) : p.source.transmuteCopy(TheArtofStockings.GRADIENT.get(), 1);
             int top = p.dyes.size() == 2 ? p.dyes.get(0).getDyeColor().getTextureDiffuseColor() : StockingsItem.color(p.source);
-            int bottom = p.dyes.isEmpty() ? 0x659FE6 : p.dyes.getLast().getDyeColor().getTextureDiffuseColor();
+            int bottom = p.dyes.isEmpty() ? StockingsItem.secondaryColor(result) : p.dyes.getLast().getDyeColor().getTextureDiffuseColor();
             result.set(DataComponents.DYED_COLOR, new DyedItemColor(top & 0xFFFFFF, true));
             result.set(TheArtofStockings.SECONDARY_COLOR.get(), bottom & 0xFFFFFF);
             return result;
         }
         var item = p.material.is(Items.STRING) ? TheArtofStockings.PANTYHOSE.get()
-                : p.material.is(Items.SHEARS) ? TheArtofStockings.FISHNET.get() : TheArtofStockings.GLOW.get();
+                : p.material.is(Items.SHEARS) ? TheArtofStockings.FISHNET.get()
+                : p.material.is(Items.GLOW_INK_SAC) ? TheArtofStockings.GLOW.get()
+                : p.material.is(Items.WHITE_WOOL) ? TheArtofStockings.STRIPED.get()
+                : p.material.is(Items.RABBIT_HIDE) ? TheArtofStockings.CAT_PAW.get()
+                : p.material.is(Items.INK_SAC) ? TheArtofStockings.MATTE.get()
+                : p.material.is(Items.SWEET_BERRIES) ? TheArtofStockings.FOX.get()
+                : p.material.is(Items.LEATHER) ? TheArtofStockings.BODYSTOCKING.get() : TheArtofStockings.CUSTOM.get();
         var result = p.source.transmuteCopy(item, 1);
         result.remove(TheArtofStockings.SECONDARY_COLOR.get());
+        if (StockingsItem.twoColors(result)) {
+            if (p.dyes.size() == 2) result.set(DataComponents.DYED_COLOR,new DyedItemColor(p.dyes.getFirst().getDyeColor().getTextureDiffuseColor() & 0xFFFFFF,true));
+            if (!p.dyes.isEmpty()) result.set(TheArtofStockings.SECONDARY_COLOR.get(),p.dyes.getLast().getDyeColor().getTextureDiffuseColor() & 0xFFFFFF);
+            return result;
+        }
         return p.dyes.isEmpty() ? result : DyedItemColor.applyDyes(result, p.dyes);
     }
     @Override public NonNullList<ItemStack> getRemainingItems(CraftingInput input) {

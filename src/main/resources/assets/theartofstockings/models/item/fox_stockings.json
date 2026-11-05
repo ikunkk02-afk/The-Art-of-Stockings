@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "theartofstockings:item/fox_stockings",
+    "layer1": "theartofstockings:item/fox_stockings_detail"
+  }
+}

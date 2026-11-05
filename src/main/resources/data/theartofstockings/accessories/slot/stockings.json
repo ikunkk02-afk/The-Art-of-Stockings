@@ -1,0 +1,9 @@
+{
+  "amount": 1,
+  "operation": "SET",
+  "order": 180,
+  "icon": "theartofstockings:slot/stockings",
+  "validators": [
+    "accessories:tag"
+  ]
+}

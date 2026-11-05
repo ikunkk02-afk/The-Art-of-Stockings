@@ -168,6 +168,7 @@ public final class StockingsGameTests {
         original.set(DataComponents.DYED_COLOR, new DyedItemColor(0xD579B2, true));
         original.set(DataComponents.CUSTOM_NAME, Component.literal("Named pair"));
         ItemStack expected = original.copy();
+        StockingsHistory.mark(expected);
         p.setItemInHand(InteractionHand.MAIN_HAND, original);
         TheArtofStockings.STOCKINGS.get().use(p.level(), p, InteractionHand.MAIN_HAND);
         h.assertTrue(!StockingsActions.wearing(p), "Equip waits for animation");
@@ -236,6 +237,7 @@ public final class StockingsGameTests {
         pair.set(DataComponents.DYED_COLOR,new DyedItemColor(0x123456,true));
         pair.set(TheArtofStockings.SECONDARY_COLOR.get(),0xABCDEF);
         var expected=pair.copy();
+        StockingsHistory.mark(expected);
         p.setItemSlot(EquipmentSlot.LEGS,new ItemStack(Items.DIAMOND_LEGGINGS));
         p.setItemInHand(InteractionHand.MAIN_HAND,pair);
         StockingsActions.startEquip(p,InteractionHand.MAIN_HAND);

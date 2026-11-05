@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "theartofstockings:item/cat_paw_stockings",
+    "layer1": "theartofstockings:item/cat_paw_stockings_detail"
+  }
+}

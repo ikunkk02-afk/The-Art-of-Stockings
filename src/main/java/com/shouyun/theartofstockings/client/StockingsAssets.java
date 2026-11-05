@@ -39,7 +39,9 @@ public final class StockingsAssets extends SimplePreparableReloadListener<Stocki
     }
     public static String modelName(Style style) {
         return switch(style) { case CLASSIC -> "stockings";case GRADIENT -> "gradient_stockings";case PANTYHOSE -> "pantyhose";
-            case FISHNET -> "fishnet_stockings";case GLOW -> "glow_stockings"; };
+            case FISHNET -> "fishnet_stockings";case GLOW -> "glow_stockings";
+            case STRIPED -> "striped_stockings";case CAT_PAW -> "cat_paw_stockings";case MATTE -> "matte_stockings";
+            case FOX -> "fox_stockings";case CUSTOM -> "custom_stockings";case BODYSTOCKING -> "bodystocking"; };
     }
     private static List<Cube> loadModel(ResourceManager manager,String model) {
         var geometry = json(manager, "geo/"+model+".geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();
@@ -69,5 +71,5 @@ public final class StockingsAssets extends SimplePreparableReloadListener<Stocki
         }
         return List.copyOf(cubes);
     }
-    @Override protected void apply(Data data, ResourceManager manager, ProfilerFiller profiler) { current = data; }
+    @Override protected void apply(Data data, ResourceManager manager, ProfilerFiller profiler) { CustomTextureCache.clear();FabricTextureCache.clear();current = data; }
 }

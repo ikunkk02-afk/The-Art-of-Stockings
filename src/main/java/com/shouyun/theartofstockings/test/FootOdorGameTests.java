@@ -26,7 +26,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class FootOdorGameTests {
     @GameTest(template = "empty")
     public static void commandGivesOdorImmediately(GameTestHelper helper) throws CommandSyntaxException {
-        var player = helper.makeMockServerPlayerInLevel();
+        var player = ModdedTestPlayers.create(helper);
         var server = helper.getLevel().getServer();
         try {
             var dispatcher = server.getCommands().getDispatcher();
@@ -88,7 +88,8 @@ public final class FootOdorGameTests {
             for (int z = 0; z < 5; z++) helper.setBlock(x, 0, z, Blocks.STONE);
         }
         var villager = helper.spawn(EntityType.VILLAGER, new BlockPos(2, 1, 2));
-        var player = helper.makeMockServerPlayerInLevel();
+        villager.getRandom().setSeed(0x570C1A65L);
+        var player = ModdedTestPlayers.create(helper);
         var source = helper.absoluteVec(new net.minecraft.world.phys.Vec3(0.5, 1.0, 2.5));
         player.setPos(source);
         player.addEffect(new MobEffectInstance(FootOdor.EFFECT, 200));
@@ -98,17 +99,17 @@ public final class FootOdorGameTests {
         var fled = new java.util.concurrent.atomic.AtomicBoolean();
         helper.onEachTick(() -> villager.getBrain().getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.WALK_TARGET)
                 .filter(target -> target.getSpeedModifier() == 0.8F).ifPresent(target -> fled.set(true)));
-        helper.runAfterDelay(60, () -> {
+        // Observe the escape when it happens, rather than sampling one arbitrary AI tick.
+        helper.succeedWhen(() -> {
             double endingDistance = villager.distanceToSqr(source);
-            level.getServer().getPlayerList().remove(player);
             helper.assertTrue(fled.get() && endingDistance > startingDistance + 1, "Villager walks away from the odor");
-            helper.succeed();
+            level.getServer().getPlayerList().remove(player);
         });
     }
 
     @GameTest(template = "empty")
     public static void creeperTracksAndLosesDistantScent(GameTestHelper helper) {
-        var player = helper.makeMockServerPlayerInLevel();
+        var player = ModdedTestPlayers.create(helper);
         try {
             player.setGameMode(GameType.SURVIVAL);
             var creeper = helper.spawn(EntityType.CREEPER, new BlockPos(2, 1, 2));

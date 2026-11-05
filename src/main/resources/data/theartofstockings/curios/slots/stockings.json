@@ -1,0 +1,16 @@
+{
+  "size": 1,
+  "order": 180,
+  "icon": "theartofstockings:slot/stockings",
+  "add_cosmetic": false,
+  "render_toggle": false,
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "accessories"
+      }
+    }
+  ]
+}

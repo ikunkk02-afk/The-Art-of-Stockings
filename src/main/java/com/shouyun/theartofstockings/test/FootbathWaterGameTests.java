@@ -1,5 +1,7 @@
 package com.shouyun.theartofstockings.test;
 
+import com.shouyun.theartofstockings.StockingsHistory;
+
 import com.shouyun.theartofstockings.FootOdor;
 import com.shouyun.theartofstockings.StockingsActions;
 import com.shouyun.theartofstockings.StockingsWear;
@@ -46,6 +48,7 @@ public final class FootbathWaterGameTests {
             StockingsActions.tick(new PlayerTickEvent.Pre(player));
             helper.assertTrue(StockingsWear.get(player).isEmpty(), "Removal clears the clothing slot");
             var expected = original.copy();
+            StockingsHistory.mark(expected);
             expected.set(TheArtofStockings.STINKY.get(), Unit.INSTANCE);
             var dirty = player.getInventory().getItem(0);
             helper.assertTrue(ItemStack.matches(dirty, expected), "Removal adds only the stinky marker");
@@ -104,7 +107,7 @@ public final class FootbathWaterGameTests {
                 && !user.hasEffect(FootOdor.EFFECT), "Drinking poisons the user and returns the empty bottle");
         user.stopUsingItem();
 
-        var target = helper.makeMockServerPlayerInLevel();
+        var target = ModdedTestPlayers.create(helper);
         try {
             target.setGameMode(GameType.SURVIVAL);
             target.setPos(user.position().add(2, 0, 0));

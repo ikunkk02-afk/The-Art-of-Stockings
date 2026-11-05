@@ -13,12 +13,16 @@ import net.minecraft.world.entity.LivingEntity;
 public final class ClientAnimations {
     private static final Map<Integer, State> STATES = new HashMap<>();
     private static ClientLevel level;
-    public record State(boolean equipping, net.minecraft.world.item.ItemStack stack, long start) {
+    public record State(boolean equipping, net.minecraft.world.item.ItemStack stack, long start,com.shouyun.theartofstockings.WearSlot slot) {
         public float progress(LivingEntity entity, float partial) {
             return Mth.clamp((entity.level().getGameTime() - start + partial) / StockingsActions.DURATION, 0, 1);
         }
         public float seconds(LivingEntity entity, float partial) {
             return progress(entity, partial) * (StockingsActions.DURATION / 20F);
+        }
+        public float coverAmount(LivingEntity entity,float partial) {
+            float p=progress(entity,partial);
+            return slot==com.shouyun.theartofstockings.WearSlot.HEAD?HeadDressing.sample(equipping,p).coverage():equipping?p:1-p;
         }
         public com.shouyun.theartofstockings.AnimationClip clip() {
             var data = StockingsAssets.current;
@@ -41,7 +45,7 @@ public final class ClientAnimations {
         clean();
         if (level == null) return;
         if (!packet.active()) STATES.remove(packet.entityId());
-        else STATES.put(packet.entityId(), new State(packet.equipping(), packet.stack().copy(), level.getGameTime() - packet.elapsed()));
+        else STATES.put(packet.entityId(), new State(packet.equipping(), packet.stack().copy(), level.getGameTime() - packet.elapsed(),packet.slot()));
     }
     public static State get(LivingEntity entity) {
         clean();
@@ -50,10 +54,38 @@ public final class ClientAnimations {
     }
     public static void pose(PlayerModel<?> model, LivingEntity entity, float age) {
         State state = get(entity);
-        if (state != null || StockingsActions.wearing(entity)) {
+        if (state != null && state.slot()==com.shouyun.theartofstockings.WearSlot.LEGS || StockingsActions.wearing(entity)) {
             // The nylon sits against the base skin, without the baggy outer trouser shell.
             model.rightPants.visible = false;
             model.leftPants.visible = false;
+        }
+        if(entity instanceof net.minecraft.world.entity.player.Player player) {
+            var body=com.shouyun.theartofstockings.StockingsWear.visual(player);
+            boolean full=com.shouyun.theartofstockings.StockingsItem.style(body)==com.shouyun.theartofstockings.StockingsItem.Style.BODYSTOCKING;
+            boolean fullAction=state!=null && state.slot()==com.shouyun.theartofstockings.WearSlot.LEGS
+                    && com.shouyun.theartofstockings.StockingsItem.style(state.stack())==com.shouyun.theartofstockings.StockingsItem.Style.BODYSTOCKING;
+            if(full || fullAction)model.jacket.visible=false;
+            if(full || fullAction || state!=null && state.slot()==com.shouyun.theartofstockings.WearSlot.HANDS
+                    || !com.shouyun.theartofstockings.StockingsWear.get(player,com.shouyun.theartofstockings.WearSlot.HANDS).isEmpty()) {
+                model.rightSleeve.visible=false;model.leftSleeve.visible=false;
+            }
+            if(full || fullAction || state!=null && state.slot()==com.shouyun.theartofstockings.WearSlot.HEAD
+                    || !com.shouyun.theartofstockings.StockingsWear.get(player,com.shouyun.theartofstockings.WearSlot.HEAD).isEmpty())model.hat.visible=false;
+        }
+        if(state!=null && state.slot()!=com.shouyun.theartofstockings.WearSlot.LEGS) {
+            float p=state.progress(entity,age-entity.tickCount);
+            float lift=Mth.sin(p*(float)Math.PI);
+            float angle=-1.2F;
+            if(state.slot()==com.shouyun.theartofstockings.WearSlot.HEAD) {
+                var frame=HeadDressing.sample(state.equipping(),p);lift=frame.weight();angle=frame.armAngle();
+                model.rightArm.y-=lift*1.2F;model.leftArm.y-=lift*1.2F;
+                model.rightArm.zRot=Mth.lerp(lift,model.rightArm.zRot,-.18F);
+                model.leftArm.zRot=Mth.lerp(lift,model.leftArm.zRot,.18F);
+            }
+            model.rightArm.xRot=Mth.lerp(lift,model.rightArm.xRot,angle);
+            model.leftArm.xRot=Mth.lerp(lift,model.leftArm.xRot,angle);
+            model.rightSleeve.copyFrom(model.rightArm);model.leftSleeve.copyFrom(model.leftArm);
+            return;
         }
         if (state == null || state.clip() == null) return;
         float time = state.seconds(entity, age - entity.tickCount);

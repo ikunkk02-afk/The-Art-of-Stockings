@@ -41,6 +41,7 @@ repo/
 
 ### Local verification and previous deliverables ###
 *.log
+/logs/
 __pycache__/
 *.pyc
 deliverables/*
@@ -48,3 +49,6 @@ deliverables/*
 !deliverables/LICENSE
 !deliverables/theartofstockings-0.4.0.jar
 !deliverables/SHA256SUMS-0.4.0-jar.txt
+
+# Published release artifacts
+!deliverables/*0.11.0*

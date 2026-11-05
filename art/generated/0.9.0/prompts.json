@@ -1,0 +1,27 @@
+[
+  {
+    "name": "mod_icon",
+    "transparent": false,
+    "prompt": "Use case: logo-brand. Create a finished square Minecraft Java mod icon for 'The Art of Stockings'. A bold pair of folded charcoal-black voxel thigh-high stockings with one dark burnt-orange fox stocking accent, tiny rose-pink heart charm and restrained antique-gold edging, centered on a deep plum square backdrop. Tasteful fantasy crafting-item badge, no person, no body, no nudity, no feet being worn. Chunky 16-bit pixel-art aesthetic, crisp square pixels, limited palette, strong silhouette readable at 64x64. The stockings must be unmistakable clothing items. Framed compact emblem, subtle warm highlights, balanced icon composition. No text, no lettering, no watermark, no extra logos. Square 1024x1024."
+  },
+  {
+    "name": "stockings_slot",
+    "transparent": true,
+    "prompt": "Use case: stylized-concept. Asset type: Minecraft accessory inventory EMPTY SLOT icon. One centered, very simple pair of stockings, a little offset from one another, recognizable folded sock silhouette. Monochrome medium/light neutral-gray contour with a few dark-gray interior pixels, vanilla Minecraft empty equipment-slot style, bold stepped pixel-art edges. Designed to be resized to exactly 16x16, avoid fine details, no decorative heart, no frame, no text, no background. Occupy the central 80 percent of a square image. True transparent background and transparent negative space inside the outline. Pixel-art sprite only, not an interface screenshot."
+  },
+  {
+    "name": "charm_effect",
+    "transparent": true,
+    "prompt": "Use case: stylized-concept. Asset type: Minecraft status effect sprite for 'Charm'. A single strong rose-magenta pixel heart with a tiny warm-gold four-point sparkle on its upper right, dark-plum one-pixel-style outline. Vanilla Minecraft status icon style, crisp chunky pixel art with very few large color regions, no gradient blur, no letters. Clear bold silhouette readable after reduction to 18x18. Square crop with symbol occupying 85 percent, generous separation around the sparkle. True transparent background, no square frame, no user interface screenshot."
+  },
+  {
+    "name": "foot_odor_effect",
+    "transparent": true,
+    "prompt": "Use case: stylized-concept. Asset type: Minecraft status effect sprite for 'Foot Odor'. A single charcoal sock with a small blocky toe pointing left at the bottom and two thick olive/lime green wavy odor trails rising above it. Flat vanilla Minecraft pixel-art status icon, bold dark outline, limited palette, four or five colors maximum. Must read as a smelly sock, not an anatomical bare foot. Designed to remain clearly legible at 18x18. No text, no frame, no photorealism, no background; genuine transparent background. Centered square icon with main silhouette occupying 85 percent."
+  },
+  {
+    "name": "dressing_progress",
+    "transparent": true,
+    "prompt": "Use case: stylized-concept. Asset type: Minecraft HUD progress meter frame texture. Create only a long thin horizontal EMPTY progress bar frame, aspect ratio 8:1, centered, filling 90 percent of the image width. Crisp vanilla pixel-art stepped border in charcoal and neutral gray with a restrained dusty-rose inner lip and one-pixel warm light accents at the corners. The long rectangular interior is empty transparent so program code can draw a colored fill beneath. No text, no numbers, no decorative icons, no completed fill, no vignette, no extra bars, no UI screenshot. True transparent background everywhere outside the thin frame and inside its rectangular hollow center. The bar is intended for a 112x14 game HUD sprite, keep its border simple and uniform."
+  }
+]

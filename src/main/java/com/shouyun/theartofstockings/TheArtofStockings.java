@@ -31,19 +31,40 @@ public final class TheArtofStockings {
     public static final Supplier<AttachmentType<ItemStack>> WORN_STOCKINGS = ATTACHMENTS.register("worn_stockings",
             () -> AttachmentType.builder(() -> ItemStack.EMPTY).serialize(ItemStack.OPTIONAL_CODEC, stack -> !stack.isEmpty())
                     .copyOnDeath().sync(ItemStack.OPTIONAL_STREAM_CODEC).build());
+    public static final Supplier<AttachmentType<ItemStack>> HAND_STOCKINGS = clothingAttachment("hand_stockings");
+    public static final Supplier<AttachmentType<ItemStack>> HEAD_STOCKINGS = clothingAttachment("head_stockings");
+    private static Supplier<AttachmentType<ItemStack>> clothingAttachment(String id) {
+        return ATTACHMENTS.register(id, () -> AttachmentType.builder(() -> ItemStack.EMPTY)
+                .serialize(ItemStack.OPTIONAL_CODEC, stack -> !stack.isEmpty()).copyOnDeath().sync(ItemStack.OPTIONAL_STREAM_CODEC).build());
+    }
     public static final DeferredItem<StockingsItem> STOCKINGS = ITEMS.register("stockings",
             () -> new StockingsItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<StockingsItem> GRADIENT = clothing("gradient_stockings", StockingsItem.Style.GRADIENT);
     public static final DeferredItem<StockingsItem> PANTYHOSE = clothing("pantyhose", StockingsItem.Style.PANTYHOSE);
     public static final DeferredItem<StockingsItem> FISHNET = clothing("fishnet_stockings", StockingsItem.Style.FISHNET);
     public static final DeferredItem<StockingsItem> GLOW = clothing("glow_stockings", StockingsItem.Style.GLOW);
+    public static final DeferredItem<StockingsItem> STRIPED = clothing("striped_stockings", StockingsItem.Style.STRIPED);
+    public static final DeferredItem<StockingsItem> CAT_PAW = clothing("cat_paw_stockings", StockingsItem.Style.CAT_PAW);
+    public static final DeferredItem<StockingsItem> MATTE = clothing("matte_stockings", StockingsItem.Style.MATTE);
+    public static final DeferredItem<StockingsItem> FOX = clothing("fox_stockings", StockingsItem.Style.FOX);
+    public static final DeferredItem<StockingsItem> CUSTOM = clothing("custom_stockings", StockingsItem.Style.CUSTOM);
+    public static final DeferredItem<StockingsItem> BODYSTOCKING = clothing("bodystocking", StockingsItem.Style.BODYSTOCKING);
     public static final DeferredItem<PaletteItem> PALETTE = ITEMS.register("palette", () -> new PaletteItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<FootbathWaterItem> FOOTBATH_WATER = ITEMS.register("footbath_water",
             () -> new FootbathWaterItem(new Item.Properties().stacksTo(1)));
     public static final DeferredRegister<DataComponentType<?>> COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MODID);
     public static final Supplier<DataComponentType<Integer>> SECONDARY_COLOR = COMPONENTS.register("secondary_color",
             () -> DataComponentType.<Integer>builder().persistent(Codec.intRange(0, 0xFFFFFF)).networkSynchronized(ByteBufCodecs.INT).build());
+    public static final Supplier<DataComponentType<Integer>> OPACITY = COMPONENTS.register("opacity",
+            () -> DataComponentType.<Integer>builder().persistent(Codec.intRange(0, 100)).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+    public static final Supplier<DataComponentType<Integer>> DEPTH = COMPONENTS.register("depth",
+            () -> DataComponentType.<Integer>builder().persistent(Codec.intRange(0, 100)).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+    public static final Supplier<DataComponentType<String>> CUSTOM_TEXTURE = COMPONENTS.register("custom_texture",
+            () -> DataComponentType.<String>builder().persistent(CustomStockingsTexture.CODEC)
+                    .networkSynchronized(CustomStockingsTexture.STREAM_CODEC).build());
     public static final Supplier<DataComponentType<Unit>> STINKY = COMPONENTS.register("stinky",
+            () -> DataComponentType.<Unit>builder().persistent(Unit.CODEC).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).build());
+    public static final Supplier<DataComponentType<Unit>> WORN_BEFORE = COMPONENTS.register("worn_before",
             () -> DataComponentType.<Unit>builder().persistent(Unit.CODEC).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).build());
     public static final DeferredRegister<RecipeSerializer<?>> RECIPES = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
     public static final Supplier<SimpleCraftingRecipeSerializer<StockingsStyleRecipe>> STYLE_RECIPE = RECIPES.register("stockings_style",
@@ -57,8 +78,18 @@ public final class TheArtofStockings {
         COMPONENTS.register(bus);
         RECIPES.register(bus);
         FootOdor.register(bus);
+        Charm.register(bus);
+        Excitement.register(bus);
         bus.addListener(StockingsNetwork::register);
         bus.addListener(this::creativeItems);
+        if (net.neoforged.fml.ModList.get().isLoaded("curios")) {
+            bus.addListener((net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent event) ->
+                    event.enqueueWork(com.shouyun.theartofstockings.compat.CuriosStockings::register));
+        }
+        if (net.neoforged.fml.ModList.get().isLoaded("accessories")) {
+            bus.addListener((net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent event) ->
+                    event.enqueueWork(com.shouyun.theartofstockings.compat.AccessoriesStockings::register));
+        }
     }
     private void creativeItems(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
@@ -66,6 +97,8 @@ public final class TheArtofStockings {
             event.accept(PALETTE);
             event.accept(FOOTBATH_WATER);
             event.accept(GRADIENT); event.accept(PANTYHOSE); event.accept(FISHNET); event.accept(GLOW);
+            event.accept(STRIPED); event.accept(CAT_PAW); event.accept(MATTE); event.accept(FOX); event.accept(CUSTOM);
+            event.accept(BODYSTOCKING);
             for (DyeColor color : DyeColor.values()) {
                 ItemStack stack = STOCKINGS.toStack();
                 stack.set(DataComponents.DYED_COLOR, new DyedItemColor(color.getTextureDiffuseColor(), true));

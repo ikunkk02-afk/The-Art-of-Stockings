@@ -27,7 +27,9 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    maven { url = 'https://maven.theillusivec4.top/' }
+    maven { url = 'https://maven.wispforest.io/releases/' }
+    maven { url = 'https://maven.su5ed.dev/releases/' }
 }
 
 base {
@@ -119,6 +121,15 @@ configurations {
 }
 
 dependencies {
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+    compileOnly("io.wispforest:accessories-neoforge:${accessories_version}") { transitive = false }
+    if (project.hasProperty('withCurios')) {
+        localRuntime "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    }
+    if (project.hasProperty('withAccessories')) {
+        localRuntime "io.wispforest:accessories-neoforge:${accessories_version}"
+        localRuntime "io.wispforest:owo-lib-neoforge:${owo_version}"
+    }
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
@@ -200,3 +211,21 @@ tasks.named('jar', Jar) {
     from('TEMPLATE_LICENSE.txt')
 }
 java { withSourcesJar() }
+
+// Exercise the actual client mesh writer without opening a game window or a GL context.
+sourceSets {
+    renderTest {
+        java.srcDir 'src/renderTest/java'
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+    }
+}
+tasks.register('checkStockingsRendering', JavaExec) {
+    dependsOn tasks.named('renderTestClasses')
+    classpath = project.hasProperty('renderRegressionJar')
+            ? files(project.property('renderRegressionJar')) + sourceSets.renderTest.runtimeClasspath
+            : sourceSets.renderTest.runtimeClasspath
+    mainClass = 'com.shouyun.theartofstockings.client.StockingsRenderingRegression'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
+}
+tasks.named('check') { dependsOn tasks.named('checkStockingsRendering') }
